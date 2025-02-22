@@ -1,0 +1,92 @@
+package com.example.myapplication.viewModel
+
+import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.myapplication.model.UserResponse
+import com.example.myapplication.respository.UserRepository
+import com.example.myapplication.utils.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class UserViewModel @Inject constructor(
+    private val userRepository: UserRepository
+): ViewModel() {
+
+    var isLoading = mutableStateOf(false)
+    init {
+        viewModelScope.launch {
+            fetchDataFromApi()
+            observeUserData()
+        }
+    }
+
+    // LiveData to observe user data
+    private val _userData = MutableStateFlow<List<UserResponse>>(emptyList()) // ✅ StateFlow
+    val userData: StateFlow<List<UserResponse>> = _userData.asStateFlow()
+
+    /* suspend fun fetchDataFromApi(): Resource<List<UserResponse>> {
+
+
+        val result = userRepository.getUserResponseAPI()
+
+        if (result is Resource.Success) {
+            isLoading.value = true
+            _getUserData.value = result.data!!
+            userRepository.addAllTask(result.data!!)
+        }
+
+        return result
+    }*/
+
+
+    // Fetch API data and store it in Room
+    private fun fetchDataFromApi() {
+        viewModelScope.launch {
+            isLoading.value = true
+            val result = userRepository.fetchUserDataFromApi()
+            if (result is Resource.Error) {
+                Log.e("UserViewModel", "API Error: ${result.message}")
+            }
+            isLoading.value = false
+        }
+    }
+    // Observe Room database & update LiveData
+    private fun observeUserData() {
+        viewModelScope.launch {
+            userRepository.tasks.collect { taskList ->
+                _userData.value = taskList // ✅ Collect Room Flow
+            }
+        }
+    }
+    fun updateTask(task: UserResponse) {
+        viewModelScope.launch {
+            userRepository.updateTask(task)
+        }
+    }
+
+    fun markTaskCompleted(task: UserResponse) {
+        viewModelScope.launch {
+            userRepository.updateTask(task.copy(isCompleted = !task.isCompleted))
+        }
+    }
+
+    fun deleteTask(task: UserResponse) {
+        viewModelScope.launch {
+            userRepository.deleteTask(task)
+        }
+    }
+    fun addTask(task: UserResponse) {
+        viewModelScope.launch {
+            userRepository.addTask(task)
+        }
+    }
+}
