@@ -59,6 +59,8 @@ Event Name    |Trigger Condition
 task_added    -When a new task is added
 task_edited   -When an existing task is edited
 task_completed-	When a task is marked as completed
+![image](https://github.com/user-attachments/assets/1fdd402f-08c2-44ed-aa9a-ab1945561f27)
+
 
 
 
