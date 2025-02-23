@@ -11,7 +11,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -24,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.myapplication.model.UserResponse
 import com.example.myapplication.ui.theme.MyApplicationTheme
@@ -32,9 +38,9 @@ import com.example.myapplication.view.AddTaskDialog
 import com.example.myapplication.view.EditTaskDialog
 import com.example.myapplication.view.UserListItem
 import com.example.myapplication.viewModel.UserViewModel
-
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+
 
 
 @ExperimentalMaterialApi
@@ -42,20 +48,24 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
+
             MyApplicationTheme {
-                Surface(
-                    color = MaterialTheme.colors.background,
-                    modifier = Modifier.fillMaxSize()
-                ) {
+//                Surface(
+//                    color =Color.DarkGray,
+//                    modifier = Modifier.fillMaxSize()
+//                ) {
                     UserScreen()
-                }
+               // }
             }
         }
     }
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserScreen(viewModel: UserViewModel = hiltViewModel()) {
     val users = viewModel.userData.collectAsState()
@@ -63,12 +73,17 @@ fun UserScreen(viewModel: UserViewModel = hiltViewModel()) {
     var selectedTask = remember { mutableStateOf<UserResponse?>(null) }
     val showDialog = remember { mutableStateOf(false) }
     val showDialogAdd = remember { mutableStateOf(false) }
-    Surface(
-        color = MaterialTheme.colors.background,
-        modifier = Modifier.fillMaxSize()
-    ) {
+    val systemUiController = rememberSystemUiController()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    SideEffect {
+        systemUiController.setStatusBarColor(color = Color.Transparent, darkIcons = true)
+        systemUiController.setNavigationBarColor(color = Color.Black, darkIcons = false)
+    }
         Scaffold(
-            floatingActionButton = {
+
+                    contentWindowInsets = WindowInsets.navigationBars,
+
+                    floatingActionButton = {
                 FloatingActionButton(onClick = { showDialogAdd.value = true }) {
                     Icon(Icons.Default.Add, contentDescription = "Add Task")
                 }
@@ -77,10 +92,11 @@ fun UserScreen(viewModel: UserViewModel = hiltViewModel()) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
-                    .background(Color.DarkGray)
+                    .background(Color.LightGray)
+                    .windowInsetsPadding(WindowInsets.systemBars) // ✅ Fix system bar overlap
+                    .padding(padding)
             ) {
-                Text(text = "User List", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text(text = "Task List", fontSize = 24.sp, fontWeight = FontWeight.Bold)
 
 
                 if (isLoading) {
@@ -92,7 +108,9 @@ fun UserScreen(viewModel: UserViewModel = hiltViewModel()) {
                         modifier = Modifier.padding(16.dp)
                     )
                 } else {
-                    LazyColumn {
+                    LazyColumn (
+                        modifier = Modifier.weight(1f)
+                    ){
                         items(users.value) { user -> // ✅ FIX: Pass the correct list
                             UserListItem(
                                 user,
@@ -131,7 +149,7 @@ fun UserScreen(viewModel: UserViewModel = hiltViewModel()) {
 
             }
         }
-    }
+
 }
 
 

@@ -19,6 +19,9 @@ retrofit = "2.9.0"
 roomRuntime = "2.6.1"
 ui = "1.7.8"
 runtimeLivedata = "1.7.8"
+firebase-crashlytics = "2.9.9"
+firebase-perf = "1.4.2"
+google-services = "4.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -53,4 +56,7 @@ androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtim
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics" }
+firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebase-perf" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 

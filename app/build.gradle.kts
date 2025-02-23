@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("kotlin-kapt")  // Required for Hilt
     id("dagger.hilt.android.plugin")  // Hilt Plugin
+    alias(libs.plugins.google.services) // Google services plugin
+    alias(libs.plugins.firebase.crashlytics) // Crashlytics plugin
+    alias(libs.plugins.firebase.perf) // Performance plugin
 }
 
 android {
@@ -83,5 +86,10 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
+
+    implementation("com.google.firebase:firebase-analytics-ktx:21.5.1")
+    implementation("com.google.firebase:firebase-crashlytics-ktx:18.5.1")
+    implementation("com.google.firebase:firebase-perf-ktx:20.4.0")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
 
 }

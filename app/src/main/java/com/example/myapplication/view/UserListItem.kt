@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.model.UserResponse
@@ -69,7 +71,7 @@ fun UserListItem(userResponse: UserResponse,
             ){
                 Text(
                     text = "Is Task Completed",
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.wrapContentSize(),
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Normal,
                     fontFamily = FontFamily.SansSerif
@@ -86,13 +88,15 @@ fun UserListItem(userResponse: UserResponse,
                 Icon(Icons.Default.Delete, contentDescription = "Delete")
             }
             }
-           /* Text(
+
+
+           Text(
                 text = "Status: ${userResponse.isCompleted}",
                 modifier = Modifier.fillMaxWidth(),
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Normal,
                 fontFamily = FontFamily.SansSerif
-            )*/
+            )
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.myapplication.viewModel
 
+import android.os.Bundle
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
@@ -9,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.myapplication.model.UserResponse
 import com.example.myapplication.respository.UserRepository
 import com.example.myapplication.utils.Resource
+import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val firebaseAnalytics: FirebaseAnalytics
 ): ViewModel() {
 
     var isLoading = mutableStateOf(false)
@@ -70,12 +73,21 @@ class UserViewModel @Inject constructor(
     fun updateTask(task: UserResponse) {
         viewModelScope.launch {
             userRepository.updateTask(task)
+            val bundle = Bundle().apply {
+                putString("task_title", task.title)
+            }
+            firebaseAnalytics.logEvent("task_updated", bundle)
         }
     }
 
     fun markTaskCompleted(task: UserResponse) {
         viewModelScope.launch {
             userRepository.updateTask(task.copy(isCompleted = !task.isCompleted))
+            val bundle = Bundle().apply {
+                putString("task_title", task.title)
+                putString("completed", task.isCompleted.toString())
+            }
+            firebaseAnalytics.logEvent("task_completed", bundle)
         }
     }
 
@@ -87,6 +99,11 @@ class UserViewModel @Inject constructor(
     fun addTask(task: UserResponse) {
         viewModelScope.launch {
             userRepository.addTask(task)
+            // ✅ Log Firebase Event
+            val bundle = Bundle().apply {
+                putString("task_title", task.title)
+            }
+            firebaseAnalytics.logEvent("task_added", bundle)
         }
     }
 }

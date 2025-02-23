@@ -4,6 +4,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
 
+
     <application
         android:name=".UserApplication"
         android:allowBackup="true"
@@ -26,6 +27,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="true" />
+        <meta-data
+            android:name="firebase_performance_logcat_enabled"
+            android:value="true" />
     </application>
 
 </manifest>
