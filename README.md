@@ -56,9 +56,9 @@ dependencies {
 The following Firebase Analytics events are tracked:
 
 Event Name    |Trigger Condition
-task_added    |When a new task is added
-task_edited   |When an existing task is edited
-task_completed|	When a task is marked as completed
+task_added    -When a new task is added
+task_edited   -When an existing task is edited
+task_completed-	When a task is marked as completed
 
 
 
