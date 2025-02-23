@@ -22,6 +22,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,38 +54,27 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             MyApplicationTheme {
-//                Surface(
-//                    color =Color.DarkGray,
-//                    modifier = Modifier.fillMaxSize()
-//                ) {
-                    UserScreen()
-               // }
+                UserScreen()
+
             }
         }
     }
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun UserScreen(viewModel: UserViewModel = hiltViewModel()) {
     val users = viewModel.userData.collectAsState()
     val isLoading = viewModel.isLoading.value
-    var selectedTask = remember { mutableStateOf<UserResponse?>(null) }
-    val showDialog = remember { mutableStateOf(false) }
-    val showDialogAdd = remember { mutableStateOf(false) }
-    val systemUiController = rememberSystemUiController()
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    SideEffect {
-        systemUiController.setStatusBarColor(color = Color.Transparent, darkIcons = true)
-        systemUiController.setNavigationBarColor(color = Color.Black, darkIcons = false)
-    }
+    val selectedTask = rememberSaveable { mutableStateOf<UserResponse?>(null) }
+    val showDialogEdit = rememberSaveable{ mutableStateOf(false) }
+    val showDialogAdd = rememberSaveable { mutableStateOf(false) }
         Scaffold(
 
-                    contentWindowInsets = WindowInsets.navigationBars,
-
-                    floatingActionButton = {
-                FloatingActionButton(onClick = { showDialogAdd.value = true }) {
+                   // contentWindowInsets = WindowInsets.navigationBars,
+                  floatingActionButton = {
+                  FloatingActionButton(onClick = { showDialogAdd.value = true }) {
                     Icon(Icons.Default.Add, contentDescription = "Add Task")
                 }
             }
@@ -101,7 +91,8 @@ fun UserScreen(viewModel: UserViewModel = hiltViewModel()) {
 
                 if (isLoading) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-                } else if (users.value.isEmpty()) {
+                }
+                else if (users.value.isEmpty()) {
                     Text(
                         text = "No users available",
                         fontSize = 18.sp,
@@ -111,21 +102,21 @@ fun UserScreen(viewModel: UserViewModel = hiltViewModel()) {
                     LazyColumn (
                         modifier = Modifier.weight(1f)
                     ){
-                        items(users.value) { user -> // ✅ FIX: Pass the correct list
+                        items(users.value) { user ->
                             UserListItem(
                                 user,
-                                onEdit = { selectedTask.value = it; showDialog.value = true },
-                                viewModel::deleteTask,
+                                onEdit = { selectedTask.value = it; showDialogEdit.value = true },
+                                onDelete=viewModel::deleteTask,
                                 onToggleComplete = { viewModel.markTaskCompleted(user) }
                             )
                         }
                     }
 
-                    if (showDialog.value && selectedTask != null) {
+                    if (showDialogEdit.value) {
                         selectedTask.value?.let {
                             EditTaskDialog(
                                 task = it,
-                                onDismiss = { showDialog.value = false },
+                                onDismiss = { showDialogEdit.value = false },
                                 onConfirm = { id, title, useRId ->
                                     viewModel.updateTask(
                                         UserResponse(
@@ -135,7 +126,7 @@ fun UserScreen(viewModel: UserViewModel = hiltViewModel()) {
                                             isCompleted = false
                                         )
                                     )
-                                    showDialog.value = false
+                                    showDialogEdit.value = false
                                 }
 
                             )

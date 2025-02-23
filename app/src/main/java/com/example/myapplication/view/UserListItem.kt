@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Icon
@@ -87,6 +88,9 @@ fun UserListItem(userResponse: UserResponse,
             IconButton(onClick = { onDelete(userResponse) }) {
                 Icon(Icons.Default.Delete, contentDescription = "Delete")
             }
+                Button(onClick = { throw RuntimeException("Test Crash from Firebase!") }) {
+                    Text("Trigger Crash")
+                }
             }
 
 

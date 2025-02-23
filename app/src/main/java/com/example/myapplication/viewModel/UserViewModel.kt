@@ -32,23 +32,9 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    // LiveData to observe user data
     private val _userData = MutableStateFlow<List<UserResponse>>(emptyList()) // ✅ StateFlow
     val userData: StateFlow<List<UserResponse>> = _userData.asStateFlow()
 
-    /* suspend fun fetchDataFromApi(): Resource<List<UserResponse>> {
-
-
-        val result = userRepository.getUserResponseAPI()
-
-        if (result is Resource.Success) {
-            isLoading.value = true
-            _getUserData.value = result.data!!
-            userRepository.addAllTask(result.data!!)
-        }
-
-        return result
-    }*/
 
 
     // Fetch API data and store it in Room
@@ -94,6 +80,10 @@ class UserViewModel @Inject constructor(
     fun deleteTask(task: UserResponse) {
         viewModelScope.launch {
             userRepository.deleteTask(task)
+            val bundle = Bundle().apply {
+                putString("task_title", task.title)
+            }
+            firebaseAnalytics.logEvent("task_deleted", bundle)
         }
     }
     fun addTask(task: UserResponse) {
