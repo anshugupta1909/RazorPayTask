@@ -57,9 +57,37 @@ The following Firebase Analytics events are tracked:
 
 Event Name    |Trigger Condition
 task_added    -When a new task is added
-task_edited   -When an existing task is edited
+task_updated  -When an existing task is edited
 task_completed-	When a task is marked as completed
-![image](https://github.com/user-attachments/assets/1fdd402f-08c2-44ed-aa9a-ab1945561f27)
+
+List UI which contain Edit, Delete , checkbox for Task Completed, Trigger Crash Button to trigger crash
+<img width="351" alt="image" src="https://github.com/user-attachments/assets/647c0b6b-38a3-43aa-ab23-182bb8e5a4f1" />
+
+
+Steps to trigger crash
+1. click on Trigger crash
+app will crashed and send log to firebase
+
+You can see in Crash Analytics in Firebase:
+<img width="1412" alt="image" src="https://github.com/user-attachments/assets/66ced389-c647-4af1-a5c9-f340482bbb8f" />
+
+Steps: To edit task
+1. click on Edit Icon
+2.Dialog come and edit text and save it
+<img width="351" alt="image" src="https://github.com/user-attachments/assets/8eaa9d69-61a8-4415-824a-dd50fa8ae195" />
+
+Firebase Event
+task_updated event show in firebase
+<img width="1157" alt="image" src="https://github.com/user-attachments/assets/aba8d05c-66de-4b7a-a275-be64ea3d41f5" />
+
+
+
+
+
+
+
+
+
 
 
 
